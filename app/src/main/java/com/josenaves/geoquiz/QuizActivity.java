@@ -3,20 +3,22 @@ package com.josenaves.geoquiz;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 public class QuizActivity extends ActionBarActivity {
 
-    private Button mTrueButton;
-    private Button mFalseButton;
-    private ImageButton mNextButton;
-    private ImageButton mPreviousButton;
-
-    private TextView mQuestionTextView;
+    @InjectView(R.id.true_button) Button mTrueButton;
+    @InjectView(R.id.false_button) Button mFalseButton;
+    @InjectView(R.id.next_button) ImageButton mNextButton;
+    @InjectView(R.id.previous_button) ImageButton mPreviousButton;
+    @InjectView(R.id.question_text_view) TextView mQuestionTextView;
 
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
         new TrueFalse(R.string.question_oceans, true),
@@ -31,57 +33,35 @@ public class QuizActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // inflates the layout (instantiates components)
-        setContentView(R.layout.activity_quiz);
+        setContentView(R.layout.activity_quiz); // inflates the layout (instantiates components)
 
-        mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        ButterKnife.inject(this); // ButterKnife do its stuff
+
         updateQuestion();
+    }
 
-        mTrueButton = (Button)findViewById(R.id.true_button);
-        mTrueButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkAnswer(true);
-            }
-        });
+    @OnClick(R.id.true_button)
+    void checkAnswerTrue() {
+        checkAnswer(true);
+    }
 
-        mFalseButton = (Button)findViewById(R.id.false_button);
-        mFalseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkAnswer(false);
-            }
-        });
+    @OnClick(R.id.false_button)
+    void checkAnswerFalse() {
+        checkAnswer(false);
+    }
 
-        mNextButton = (ImageButton)findViewById(R.id.next_button);
-        mNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex+1) % mQuestionBank.length;
-                updateQuestion();
-            }
-        });
+    @OnClick({R.id.next_button, R.id.question_text_view})
+    void nextQuestion() {
+        mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+        updateQuestion();
+    }
 
-        mPreviousButton = (ImageButton)findViewById(R.id.previous_button);
-        mPreviousButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCurrentIndex = Math.abs(mCurrentIndex - 1) % mQuestionBank.length;
-                updateQuestion();
-            }
-        });
+    @OnClick(R.id.previous_button)
+    void previousQuestion() {
+        if (mCurrentIndex < 1) return;
 
-
-        mQuestionTextView = (TextView)findViewById(R.id.question_text_view);
-        mQuestionTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex+1) % mQuestionBank.length;
-                updateQuestion();
-            }
-        });
-
-
+        mCurrentIndex =  (mCurrentIndex - 1) % mQuestionBank.length;
+        updateQuestion();
     }
 
     private void updateQuestion() {
