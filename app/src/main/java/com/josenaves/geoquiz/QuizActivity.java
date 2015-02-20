@@ -1,7 +1,9 @@
 package com.josenaves.geoquiz;
 
+import android.os.PersistableBundle;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -13,6 +15,10 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class QuizActivity extends ActionBarActivity {
+
+    private static final String TAG = "QuizActivity";
+
+    private static final String KEY_INDEX = "index";
 
     @InjectView(R.id.true_button) Button mTrueButton;
     @InjectView(R.id.false_button) Button mFalseButton;
@@ -33,11 +39,23 @@ public class QuizActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz); // inflates the layout (instantiates components)
 
         ButterKnife.inject(this); // ButterKnife do its stuff
 
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
+
         updateQuestion();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
     @OnClick(R.id.true_button)
@@ -87,4 +105,36 @@ public class QuizActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_quiz, menu);
         return true;
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
+    }
+
 }
