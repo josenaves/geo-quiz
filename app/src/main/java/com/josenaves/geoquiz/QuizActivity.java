@@ -1,5 +1,6 @@
 package com.josenaves.geoquiz;
 
+import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -22,9 +23,11 @@ public class QuizActivity extends ActionBarActivity {
 
     @InjectView(R.id.true_button) Button mTrueButton;
     @InjectView(R.id.false_button) Button mFalseButton;
+    @InjectView(R.id.cheat_button) Button mCheatButton;
     @InjectView(R.id.next_button) ImageButton mNextButton;
     @InjectView(R.id.previous_button) ImageButton mPreviousButton;
     @InjectView(R.id.question_text_view) TextView mQuestionTextView;
+
 
     private TrueFalse[] mQuestionBank = new TrueFalse[] {
         new TrueFalse(R.string.question_oceans, true),
@@ -80,6 +83,12 @@ public class QuizActivity extends ActionBarActivity {
 
         mCurrentIndex =  (mCurrentIndex - 1) % mQuestionBank.length;
         updateQuestion();
+    }
+
+    @OnClick(R.id.cheat_button)
+    void cheat() {
+        Intent i = new Intent(QuizActivity.this, CheatActivity.class);
+        startActivity(i);
     }
 
     private void updateQuestion() {
