@@ -2,13 +2,11 @@ package com.josenaves.geoquiz;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -26,6 +24,7 @@ public class CheatActivity extends Activity {
 
     @InjectView(R.id.answerTextView) TextView mAnswerTextView;
     @InjectView(R.id.showAnswerButton) Button mShowAnswer;
+    @InjectView(R.id.apiVersion) TextView mApiVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +43,7 @@ public class CheatActivity extends Activity {
             setAnswerShownResult(mIsAnswerShown);
         }
 
+        mApiVersion.setText("API Level " + Build.VERSION.SDK_INT);
     }
 
     @Override

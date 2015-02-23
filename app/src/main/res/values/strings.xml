@@ -25,4 +25,6 @@
     <string name="show_answer_button">Show Answer</string>
     <string name="judgment_toast">Cheating is wrong.</string>
 
+    <string name="subtitle">Big Nerd Ranch</string>
+
 </resources>

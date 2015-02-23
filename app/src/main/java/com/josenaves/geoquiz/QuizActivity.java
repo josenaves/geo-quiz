@@ -1,7 +1,9 @@
 package com.josenaves.geoquiz;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.PersistableBundle;
+import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +34,7 @@ public class QuizActivity extends ActionBarActivity {
     @InjectView(R.id.question_text_view) TextView mQuestionTextView;
 
 
-    private TrueFalse[] mQuestionBank = new TrueFalse[] {
+    private final TrueFalse[] mQuestionBank = new TrueFalse[] {
         new TrueFalse(R.string.question_oceans, true),
         new TrueFalse(R.string.question_mideast, false),
         new TrueFalse(R.string.question_africa, false),
@@ -43,12 +45,16 @@ public class QuizActivity extends ActionBarActivity {
     private int mCurrentIndex = 0;
     private boolean mIsCheater;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz); // inflates the layout (instantiates components)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setSubtitle(R.string.subtitle);
+        }
 
         ButterKnife.inject(this); // ButterKnife do its stuff
 
@@ -80,6 +86,7 @@ public class QuizActivity extends ActionBarActivity {
 
     @OnClick({R.id.next_button, R.id.question_text_view})
     void nextQuestion() {
+        if (mIsCheater) return;
         mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
         mIsCheater = false;
         updateQuestion();
@@ -126,6 +133,7 @@ public class QuizActivity extends ActionBarActivity {
         }
 
         Toast.makeText(QuizActivity.this, messageResId, Toast.LENGTH_SHORT).show();
+        mIsCheater = false;
     }
 
     @Override
