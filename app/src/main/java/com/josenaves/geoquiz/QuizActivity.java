@@ -19,7 +19,10 @@ public class QuizActivity extends ActionBarActivity {
 
     private static final String TAG = "QuizActivity";
 
+    public static final String KEY_CHEATED = "cheated";
+
     private static final String KEY_INDEX = "index";
+
 
     @InjectView(R.id.true_button) Button mTrueButton;
     @InjectView(R.id.false_button) Button mFalseButton;
@@ -51,6 +54,7 @@ public class QuizActivity extends ActionBarActivity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean(KEY_CHEATED, false);
         }
 
         updateQuestion();
@@ -61,6 +65,7 @@ public class QuizActivity extends ActionBarActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putBoolean(KEY_CHEATED, mIsCheater);
     }
 
     @OnClick(R.id.true_button)
@@ -82,7 +87,7 @@ public class QuizActivity extends ActionBarActivity {
 
     @OnClick(R.id.previous_button)
     void previousQuestion() {
-        if (mCurrentIndex < 1) return;
+        if (mIsCheater || mCurrentIndex < 1) return;
 
         mCurrentIndex =  (mCurrentIndex - 1) % mQuestionBank.length;
         updateQuestion();

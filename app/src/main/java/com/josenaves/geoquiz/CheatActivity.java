@@ -22,6 +22,8 @@ public class CheatActivity extends Activity {
 
     private boolean mAnswerIsTrue;
 
+    private boolean mIsAnswerShown;
+
     @InjectView(R.id.answerTextView) TextView mAnswerTextView;
     @InjectView(R.id.showAnswerButton) Button mShowAnswer;
 
@@ -32,9 +34,23 @@ public class CheatActivity extends Activity {
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
         setAnswerShownResult(false);
+        mIsAnswerShown = false;
 
         // ButterKnife, please inject your views!
         ButterKnife.inject(this);
+
+        if (savedInstanceState != null) {
+            mIsAnswerShown = savedInstanceState.getBoolean(QuizActivity.KEY_CHEATED);
+            setAnswerShownResult(mIsAnswerShown);
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.d(TAG, "onSaveInstanceState");
+        savedInstanceState.putBoolean(QuizActivity.KEY_CHEATED, mIsAnswerShown);
     }
 
     @OnClick(R.id.showAnswerButton)
@@ -45,6 +61,8 @@ public class CheatActivity extends Activity {
         else {
             mAnswerTextView.setText(R.string.false_button);
         }
+        mIsAnswerShown = true;
+
         setAnswerShownResult(true);
     }
 
