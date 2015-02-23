@@ -38,6 +38,8 @@ public class QuizActivity extends ActionBarActivity {
     };
 
     private int mCurrentIndex = 0;
+    private boolean mIsCheater;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class QuizActivity extends ActionBarActivity {
     @OnClick({R.id.next_button, R.id.question_text_view})
     void nextQuestion() {
         mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+        mIsCheater = false;
         updateQuestion();
     }
 
@@ -86,9 +89,14 @@ public class QuizActivity extends ActionBarActivity {
     }
 
     @OnClick(R.id.cheat_button)
-    void cheat() {
+    void showCheatActivity() {
+        // this is a EXPLICIT intent
         Intent i = new Intent(QuizActivity.this, CheatActivity.class);
-        startActivity(i);
+
+        boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+        i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+
+        startActivityForResult(i, 0);
     }
 
     private void updateQuestion() {
@@ -99,14 +107,30 @@ public class QuizActivity extends ActionBarActivity {
     private void checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
         int messageResId;
-        if (userPressedTrue == answerIsTrue) {
-            messageResId = R.string.correct_toast;
+
+        if (mIsCheater) {
+            messageResId = R.string.judgment_toast;
         }
         else {
-            messageResId = R.string.incorrect_toast;
+            if (userPressedTrue == answerIsTrue) {
+                messageResId = R.string.correct_toast;
+            }
+            else {
+                messageResId = R.string.incorrect_toast;
+            }
         }
 
         Toast.makeText(QuizActivity.this, messageResId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult() called");
+
+        if (data == null) return;
+
+        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
     }
 
     @Override
